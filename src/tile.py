@@ -1,35 +1,40 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
-class Laatta:
-    """ Laatta joista kartta koostuu. Muun muassa jokeinen pelaaja, laatikko ja ansa on pelin aikana koko ajan yhden
-    laatan päällä
+class Tile:
+    """ Tile that can hold for example a character, a box or a trap. Map consists of tiles.
     """
 
-    def __init__(self, x, y):
-        self.sijainti = (x, y)
-        self.ansa = None
-        self.hahmo = None
-        self.monsteri = None
-        self.laatikko = None
+    def __init__(self, x: int, y: int):
+        """Creates a new tile.
 
-    def onKaveltavissa(self):
-        """ Palauttaa True jos laatan päälle voi kävellä, False jos ei voi
+        Args:
+            x (int): x coordinate of tile
+            y (int): y coordinate of tile
         """
-        if self.ansa == None and self.hahmo == None and self.monsteri == None:
+        self.coordinates = (x, y)
+        self.trap = None
+        self.character = None
+        self.monster = None
+        self.box = None
+
+    def is_walkable(self):
+        """ Returns True if a player or a monster can walk on this tile, otherwise False.
+        """
+        if self.trap == None and self.character == None and self.monster == None:
             return True
         else:
             return False
 
-    def poistaPelaaja(self):
-        self.hahmo = None
+    def remove_player(self):
+        self.character = None
 
-    def asetaPelaaja(self, hahmo):
-        if self.hahmo != None:
-            raise LaattaVarattu("Laatta sijainnissa "+str(self.sijainti)+" sisälsi jo hahmon "+str(self.hahmo)+
-                                " kun sinne yritettiin sijoittaa hahmo "+str(hahmo))
+    def set_player(self, character):
+        if self.character != None:
+            raise TileReserved("Character " + str(character) + " cannot be moved to tile " + str(self) + " because "
+                               + "tile is already occupied by character " + str(self.character))
         else:
-            self.hahmo = hahmo
+            self.character = character
 
 
-class LaattaVarattu(Exception):
+class TileReserved(Exception):
     pass
